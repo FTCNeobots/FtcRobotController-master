@@ -28,7 +28,7 @@ public class StateMachine extends LinearOpMode {
     private int loopState = 0;
     private int targetPos = 0;
     private int liftPosUp = 7300;
-    double rotationRatio = 6.25;
+    double rotationRatio = 6.4225;
 
 
     @Override
@@ -86,7 +86,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //turn towards the basket
                 case 10:
-                    StartTurning(90, turnSpeed);
+                    StartTurning(-90, turnSpeed);
                     runState = 11;
                     break;
                 case 11:
@@ -97,7 +97,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //drive towards basket
                 case 20:
-                    StartDrive(200, driveSpeed);
+                    StartDrive(10, driveSpeed);
                     runState = 21;
                     break;
                 case 21:
@@ -108,7 +108,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //align with basket
                 case 30:
-                    StartTurning(45, turnSpeed);
+                    StartTurning(-45, turnSpeed);
                     runState = 31;
                     break;
                 case 31:
@@ -153,6 +153,7 @@ public class StateMachine extends LinearOpMode {
 
 
                     }
+
 
 
 
