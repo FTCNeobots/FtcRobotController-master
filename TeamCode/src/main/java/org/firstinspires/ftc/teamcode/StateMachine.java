@@ -97,16 +97,17 @@ public class StateMachine extends LinearOpMode {
                     StartDrive(-45, driveSpeed);
                     runState = 43;
                     break;
+                //sleep to prevent lift from tearing itself apart
                 case 43:
+                    sleep(50);
+                    Lift(false, 1);
+                    runState = 44;
+                    break;
+                case 44:
                     BrakeToStop(50);
                     break;
-                //temporary lift back down
-                case 50:
-                    Lift(false, 1);
-                    runState = 60;
-                    break;
                 //loop
-                case 60:
+                case 50:
                     switch(loopState){
                         case 0:
 
