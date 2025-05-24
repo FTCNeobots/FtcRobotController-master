@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.ConfigSubSonic.ConfigAuto;
 
+import static java.lang.Math.abs;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -24,13 +26,15 @@ public class StateMachine extends LinearOpMode {
     double cmPerRevolution = 31;
     double ticksPerCm = countsPerRevolution / cmPerRevolution;
 
-    private double turnSpeed = 0.2;
-    private double driveSpeed = 0.25;
+    private double turnSpeed = 0.5;
+    private double driveSpeed = 0.5;
+    private double brakeSpeed = 0.25;
     private int runState = 0;
     private int loopState = 0;
     private int targetPos = 0;
     private int liftPosUp = 7300;
-    double rotationRatio = 6.25;
+    private double rotationRatio = 6.25;
+    private int startBraking = 210;
 
 
     @Override
@@ -52,10 +56,7 @@ public class StateMachine extends LinearOpMode {
                     runState = 2;
                     break;
                 case 2:
-                    if(!leftFrontDrive.isBusy()){
-                        StopMoving();
-                        runState = 10;
-                    }
+                    BrakeToStop(10);
                     break;
                 //turn towards the basket
                 case 10:
@@ -63,10 +64,7 @@ public class StateMachine extends LinearOpMode {
                     runState = 11;
                     break;
                 case 11:
-                    if(!leftFrontDrive.isBusy()){
-                        StopMoving();
-                        runState = 20;
-                    }
+                    BrakeToStop(20);
                     break;
                 //drive towards basket
                 case 20:
@@ -74,10 +72,7 @@ public class StateMachine extends LinearOpMode {
                     runState = 21;
                     break;
                 case 21:
-                    if(!leftFrontDrive.isBusy()) {
-                        StopMoving();
-                        runState = 30;
-                    }
+                    BrakeToStop(30);
                     break;
                 //align with basket
                 case 30:
@@ -85,10 +80,7 @@ public class StateMachine extends LinearOpMode {
                     runState = 31;
                     break;
                 case 31:
-                    if(!leftFrontDrive.isBusy()) {
-                        StopMoving();
-                        runState = 40;
-                    }
+                    BrakeToStop(40);
                     break;
                 //deliver in basket
                 case 40:
@@ -106,10 +98,7 @@ public class StateMachine extends LinearOpMode {
                     runState = 43;
                     break;
                 case 43:
-                    if(!leftFrontDrive.isBusy()) {
-                        StopMoving();
-                        runState = 50;
-                    }
+                    BrakeToStop(50);
                     break;
                 //temporary lift back down
                 case 50:
@@ -139,8 +128,32 @@ public class StateMachine extends LinearOpMode {
 
 
     }
-    private void StartDrive(double cm_, double speed_){
+    private void BrakeToStop(int nextStateValue_){
+        int delta_ = abs(leftFrontDrive.getTargetPosition() - leftFrontDrive.getCurrentPosition());
 
+
+        if(delta_ <= startBraking){
+            leftFrontDrive.setPower(brakeSpeed);
+            rightFrontDrive.setPower(brakeSpeed);
+            leftBackDrive.setPower(brakeSpeed);
+            rightBackDrive.setPower(brakeSpeed);
+        }
+        if(!leftFrontDrive.isBusy()){
+            leftFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            rightBackDrive.setPower(0);
+
+            runState = nextStateValue_;
+        }
+
+    }
+
+
+
+
+
+    private void StartDrive(double cm_, double speed_){
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
