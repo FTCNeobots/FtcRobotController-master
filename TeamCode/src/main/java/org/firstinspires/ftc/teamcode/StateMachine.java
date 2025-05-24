@@ -29,12 +29,17 @@ public class StateMachine extends LinearOpMode {
     private double turnSpeed = 0.5;
     private double driveSpeed = 0.5;
     private double brakeSpeed = 0.25;
+    private double swingSpeed = 1;
     private int runState = 0;
     private int loopState = 0;
     private int targetPos = 0;
     private int liftPosUp = 7300;
     private double rotationRatio = 6.25;
     private int startBraking = 210;
+
+
+    private int middlePosArm = 10;
+    private int bottomPosArm = 20;
 
 
     @Override
@@ -56,6 +61,10 @@ public class StateMachine extends LinearOpMode {
                     runState = 2;
                     break;
                 case 2:
+                    Swing(1, swingSpeed);
+                    runState = 3;
+                    break;
+                case 3:
                     BrakeToStop(10);
                     break;
                 //turn towards the basket
@@ -109,11 +118,45 @@ public class StateMachine extends LinearOpMode {
                 //loop
                 case 50:
                     switch(loopState){
+                        //align with sample
                         case 0:
-
-
-
-
+                            StartTurning(45, turnSpeed);
+                            loopState = 1;
+                            break;
+                        case 1:
+                            BrakeToStop(2);
+                            break;
+                        case 2:
+                            StartDrive(-10, driveSpeed);
+                            loopState = 3;
+                            break;
+                        case 3:
+                            BrakeToStop(4);
+                            break;
+                        case 4:
+                            StartTurning(-90, turnSpeed);
+                            loopState = 5;
+                            break;
+                        case 5:
+                            BrakeToStop(10);
+                            break;
+                        //drive to the sample
+                        case 10:
+                            StartDrive(-10, driveSpeed);
+                            loopState = 11;
+                            break;
+                        case 11:
+                            BrakeToStop(20);
+                            break;
+                        //pick up the sample
+                        case 20:
+                            Swing(2, swingSpeed);
+                            runState = 21;
+                            break;
+                        case 21:
+                            Claw(true);
+                            runState = 22;
+                            break;
 
                     }
 
@@ -221,6 +264,27 @@ public class StateMachine extends LinearOpMode {
         }
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(speed);
+    }
+    private void Swing(int upMiddleDown, double speed) {
+
+        if (upMiddleDown == 0) {
+            swingMotor.setTargetPosition(0);
+        } else if(upMiddleDown == 1){
+            swingMotor.setTargetPosition(middlePosArm);
+        }else {
+            swingMotor.setTargetPosition(bottomPosArm);
+        }
+        swingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        swingMotor.setPower(speed);
+    }
+
+    private void Claw(boolean trueForOpen){
+        if (trueForOpen) {
+            clawServo.setPosition(0.37);
+        }else{
+            clawServo.setPosition(0.06);
+        }
+
     }
 
 
