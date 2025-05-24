@@ -11,6 +11,14 @@ public class ConfigSubSonic {
     ConfigAuto(leftBackDrive, leftFrontDrive, rightBackDrive, rightFrontDrive, liftMotor, swingMotor, clawServo);
     ConfigTeleOp(leftBackDrive, leftFrontDrive, rightBackDrive, rightFrontDrive, liftMotor, swingMotor, clawServo);
 
+    private DcMotor leftFrontDrive;
+    private DcMotor rightFrontDrive;
+    private DcMotor leftBackDrive;
+    private DcMotor rightBackDrive;
+
+    private DcMotor swingMotor;
+    private DcMotor liftMotor;
+    private Servo clawServo;
 
      */
     public static void ConfigAuto(DcMotor leftBackDrive, DcMotor leftFrontDrive, DcMotor rightBackDrive, DcMotor rightFrontDrive, DcMotor liftMotor, DcMotor swingMotor, Servo clawServo){
