@@ -66,6 +66,11 @@ public class StateMachine extends LinearOpMode {
                     runState = 3;
                     break;
                 case 3:
+                    sleep(50);
+                    Claw(true);
+                    runState = 4;
+                    break;
+                case 4:
                     BrakeToStop(10, true);
                     break;
                 //turn towards the basket
@@ -114,7 +119,7 @@ public class StateMachine extends LinearOpMode {
                     runState = 44;
                     break;
                 case 44:
-                    BrakeToStop(50, true);
+                    BrakeToStop(100, true);
                     break;
                 //loop
                 case 50:
@@ -155,11 +160,8 @@ public class StateMachine extends LinearOpMode {
                             loopState = 21;
                             break;
                         case 21:
-                            Claw(true);
-                            loopState = 22;
-                            break;
-                        case 22:
-                            sleep(msForClaw);
+                            //wait for the swing to finish
+                            sleep(500);
                             Claw(false);
                             loopState = 30;
                             break;
