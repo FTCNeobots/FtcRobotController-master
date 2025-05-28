@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.ConfigSubSonic.ConfigTeleOp;
-
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -38,7 +36,23 @@ public class DriveMetal extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        ConfigTeleOp(leftBackDrive, leftFrontDrive, rightBackDrive, rightFrontDrive, liftMotor, swingMotor, clawServo);
+        leftBackDrive = hardwareMap.dcMotor.get("LBD");
+        leftFrontDrive = hardwareMap.dcMotor.get("LFD");
+        rightBackDrive = hardwareMap.dcMotor.get("RBD");
+        rightFrontDrive = hardwareMap.dcMotor.get("RFD");
+
+        liftMotor = hardwareMap.dcMotor.get("lift");
+        swingMotor = hardwareMap.dcMotor.get("swing");
+        clawServo = hardwareMap.get(Servo.class, "claw");
+
+        rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        //dit hoort niet te hoeven, maar zo werkt het?
+        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Retrieve the IMU from the hardware map
         IMU imu = hardwareMap.get(IMU.class, "imu");

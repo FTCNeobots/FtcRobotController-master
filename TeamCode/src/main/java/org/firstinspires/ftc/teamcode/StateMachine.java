@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.teamcode.ConfigSubSonic.ConfigAuto;
 
 import static java.lang.Math.abs;
@@ -34,18 +35,45 @@ public class StateMachine extends LinearOpMode {
     private int loopState = 0;
     private int targetPos = 0;
     private int liftPosUp = 7300;
-    private double rotationRatio = 6.25;
-    private int startBraking = 210;
+    private double rotationRatio = 6.4225;
+    private int startBraking = (int)Math.round(0.5 * rotationRatio * countsPerRevolution);
 
 
-    private int middlePosArm = 10;
-    private int bottomPosArm = 20;
-    private long msForClaw = 300;
+    private int middlePosArm = -300;
+    private int bottomPosArm = -1050;
+    private long msForClaw = 400;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        ConfigAuto(leftBackDrive, leftFrontDrive, rightBackDrive, rightFrontDrive, liftMotor, swingMotor, clawServo);
+        leftBackDrive = hardwareMap.dcMotor.get("LBD");
+        leftFrontDrive = hardwareMap.dcMotor.get("LFD");
+        rightBackDrive = hardwareMap.dcMotor.get("RBD");
+        rightFrontDrive = hardwareMap.dcMotor.get("RFD");
+
+        liftMotor = hardwareMap.dcMotor.get("lift");
+        swingMotor = hardwareMap.dcMotor.get("swing");
+        clawServo = hardwareMap.get(Servo.class, "claw");
+
+        rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        //dit hoort niet te hoeven, maar zo werkt het?
+        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        swingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        swingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         waitForStart();
@@ -75,7 +103,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //turn towards the basket
                 case 10:
-                    StartTurning(90, turnSpeed);
+                    StartTurning(-90, turnSpeed);
                     runState = 11;
                     break;
                 case 11:
@@ -83,7 +111,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //drive towards basket
                 case 20:
-                    StartDrive(200, driveSpeed);
+                    StartDrive(20, driveSpeed);
                     runState = 21;
                     break;
                 case 21:
@@ -91,7 +119,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //align with basket
                 case 30:
-                    StartTurning(45, turnSpeed);
+                    StartTurning(-45, turnSpeed);
                     runState = 31;
                     break;
                 case 31:
@@ -99,7 +127,9 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //deliver in basket
                 case 40:
-                    StartDrive(45, 1);
+                    //wait for the lift to go up
+                    sleep(100);
+                    StartDrive(45, 0.5);
                     runState = 41;
                     break;
                 case 41:
@@ -114,33 +144,33 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //sleep to prevent lift from tearing itself apart
                 case 43:
-                    sleep(50);
+                    sleep(500);
                     Lift(false, 1);
                     runState = 44;
                     break;
                 case 44:
-                    BrakeToStop(100, true);
+                    BrakeToStop(50, true);
                     break;
                 //loop
                 case 50:
                     switch(loopState){
                         //align with sample
                         case 0:
-                            StartTurning(45, turnSpeed);
+                            StartTurning(0, turnSpeed);
                             loopState = 1;
                             break;
                         case 1:
                             BrakeToStop(2, false);
                             break;
                         case 2:
-                            StartDrive(-10, driveSpeed);
+                            StartDrive(0, driveSpeed);
                             loopState = 3;
                             break;
                         case 3:
                             BrakeToStop(4, false);
                             break;
                         case 4:
-                            StartTurning(-90, turnSpeed);
+                            StartTurning(-45, turnSpeed);
                             loopState = 5;
                             break;
                         case 5:
@@ -148,7 +178,7 @@ public class StateMachine extends LinearOpMode {
                             break;
                         //drive to the sample
                         case 10:
-                            StartDrive(-10, driveSpeed);
+                            StartDrive(0, driveSpeed);
                             loopState = 11;
                             break;
                         case 11:
@@ -156,19 +186,21 @@ public class StateMachine extends LinearOpMode {
                             break;
                         //pick up the sample
                         case 20:
+                            swingSpeed = 0.5;
                             Swing(2, swingSpeed);
+                            swingSpeed = 1;
                             loopState = 21;
                             break;
                         case 21:
                             //wait for the swing to finish
-                            sleep(500);
+                            sleep(2000);
                             Claw(false);
                             loopState = 30;
                             break;
                         //put the arm up and move towards the basket
                         case 30:
                             sleep(msForClaw);
-                            Swing(0, swingSpeed);
+                            Swing(0, 0.25);
                             loopState = 31;
                             break;
                         case 31:
@@ -179,7 +211,7 @@ public class StateMachine extends LinearOpMode {
                             BrakeToStop(33, false);
                             break;
                         case 33:
-                            StartDrive(10, driveSpeed);
+                            StartDrive(5, driveSpeed);
                             loopState = 34;
                             break;
                         case 34:
@@ -192,6 +224,8 @@ public class StateMachine extends LinearOpMode {
 
                         // place the sample and move towards basket
                         case 40:
+                            //wait for the arm to stop jumping
+                            sleep(400);
                             StartTurning(-45, turnSpeed);
                             loopState = 41;
                             break;
@@ -223,25 +257,28 @@ public class StateMachine extends LinearOpMode {
     private void BrakeToStop(int nextStateValue_, boolean trueForRunState_){
         int delta_ = abs(leftFrontDrive.getTargetPosition() - leftFrontDrive.getCurrentPosition());
 
+        while(delta_ > startBraking){
+            delta_ = abs(leftFrontDrive.getTargetPosition() - leftFrontDrive.getCurrentPosition());
 
-        if(delta_ <= startBraking){
-            leftFrontDrive.setPower(brakeSpeed);
-            rightFrontDrive.setPower(brakeSpeed);
-            leftBackDrive.setPower(brakeSpeed);
-            rightBackDrive.setPower(brakeSpeed);
         }
+        leftFrontDrive.setPower(brakeSpeed);
+        rightFrontDrive.setPower(brakeSpeed);
+        leftBackDrive.setPower(brakeSpeed);
+        rightBackDrive.setPower(brakeSpeed);
         if(!leftFrontDrive.isBusy()){
-            leftFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            rightBackDrive.setPower(0);
-            if(trueForRunState_){
-                runState = nextStateValue_;
-            }else{
-                loopState = nextStateValue_;
+                leftFrontDrive.setPower(0);
+                leftBackDrive.setPower(0);
+                rightFrontDrive.setPower(0);
+                rightBackDrive.setPower(0);
+                if(trueForRunState_){
+                    runState = nextStateValue_;
+                }else{
+                    loopState = nextStateValue_;
+                }
+
             }
 
-        }
+
 
     }
 
