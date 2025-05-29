@@ -330,7 +330,7 @@ public class StateMachine extends LinearOpMode {
                             BrakeToStop(30, false);
                             break;
                         case 30:
-                            sleep(1000);
+                            sleep(0);
                             Claw(true);
                             sleep(msForClaw);
                             Claw(false);
