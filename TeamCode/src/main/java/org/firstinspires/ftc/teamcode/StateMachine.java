@@ -28,14 +28,14 @@ public class StateMachine extends LinearOpMode {
     double ticksPerCm = countsPerRevolution / cmPerRevolution;
 
     private double turnSpeed = 0.5;
-    private double driveSpeed = 0.5;
+    private double driveSpeed = 0.25;
     private double brakeSpeed = 0.25;
     private double swingSpeed = 1;
     private int runState = 0;
     private int loopState = 0;
     private int targetPos = 0;
-    private int liftPosUp = 7300;
-    private double rotationRatio = 6.4225;
+    private int liftPosUp = 7200;
+    private double rotationRatio = 6.44;
     private int startBraking = (int)Math.round(0.5 * rotationRatio * countsPerRevolution);
 
 
@@ -103,6 +103,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //turn towards the basket
                 case 10:
+                    sleep(50);
                     StartTurning(-90, turnSpeed);
                     runState = 11;
                     break;
@@ -111,7 +112,8 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //drive towards basket
                 case 20:
-                    StartDrive(20, driveSpeed);
+                    sleep(50);
+                    StartDrive(15, driveSpeed);
                     runState = 21;
                     break;
                 case 21:
@@ -119,6 +121,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //align with basket
                 case 30:
+                    sleep(50);
                     StartTurning(-45, turnSpeed);
                     runState = 31;
                     break;
@@ -129,7 +132,7 @@ public class StateMachine extends LinearOpMode {
                 case 40:
                     //wait for the lift to go up
                     sleep(100);
-                    StartDrive(45, 0.5);
+                    StartDrive(40, 0.5);
                     runState = 41;
                     break;
                 case 41:
@@ -139,12 +142,13 @@ public class StateMachine extends LinearOpMode {
                     }
                     break;
                 case 42:
-                    StartDrive(-45, driveSpeed);
+                    sleep(50);
+                    StartDrive(-35, driveSpeed);
                     runState = 43;
                     break;
                 //sleep to prevent lift from tearing itself apart
                 case 43:
-                    sleep(500);
+                    sleep(1500);
                     Lift(false, 1);
                     runState = 44;
                     break;
@@ -153,95 +157,224 @@ public class StateMachine extends LinearOpMode {
                     break;
                 //loop
                 case 50:
+                    while(loopState < 60) {
+                        switch (loopState) {
+                            //align with sample
+                            case 0:
+                                sleep(50);
+                                StartTurning(-45, turnSpeed);
+                                loopState = 1;
+                                break;
+                            case 1:
+                                Swing(1, swingSpeed);
+                                Claw(true);
+                                loopState = 2;
+                                break;
+                            case 2:
+                                BrakeToStop(10, false);
+                                break;
+                            case 10:
+                                sleep(50);
+                                StartDrive(0, driveSpeed);
+                                loopState = 11;
+                                break;
+                            case 11:
+                                BrakeToStop(12, false);
+                                break;
+                            case 12:
+                                Swing(2, swingSpeed);
+                                loopState = 13;
+                                break;
+                            case 13:
+                                sleep(500);
+                                Claw(false);
+                                loopState = 20;
+                                break;
+                            case 20:
+                                sleep(msForClaw);
+                                Swing(0, 0.4);
+                                loopState = 21;
+                                break;
+                            case 21:
+                                StartTurning(45, turnSpeed);
+                                loopState = 22;
+                                break;
+                            case 22:
+                                BrakeToStop(30, false);
+                                break;
+                            case 30:
+                                sleep(1000);
+                                Claw(true);
+                                sleep(msForClaw);
+                                Claw(false);
+                                loopState = 31;
+                                break;
+                            case 31:
+                                sleep(msForClaw);
+                                Swing(1, swingSpeed);
+                                loopState = 40;
+                                break;
+                            case 40:
+                                sleep(500);
+                                Lift(true, 1);
+                                loopState = 41;
+                                break;
+                            case 41:
+                                //wait for the lift to go up
+                                sleep(3000);
+                                StartDrive(40, 0.5);
+                                Claw(true);
+                                loopState = 42;
+                                break;
+                            case 42:
+                                if (!leftFrontDrive.isBusy()) {
+                                    StopMoving();
+                                    loopState = 50;
+                                }
+                                break;
+                            case 50:
+                                sleep(50);
+                                StartDrive(-35, driveSpeed);
+                                loopState = 51;
+                                break;
+                            //sleep to prevent lift from tearing itself apart
+                            case 51:
+                                sleep(1500);
+                                Lift(false, 1);
+                                loopState = 52;
+                                break;
+                            case 52:
+                                BrakeToStop(60, false);
+                                loopState = 60;
+                                break;
+                        }
+                    }
+
+                    runState = 60;
+                    loopState = 0;
+                    break;
+                case 60:
                     switch(loopState){
-                        //align with sample
                         case 0:
-                            StartTurning(0, turnSpeed);
+                            sleep(50);
+                            StartTurning(45, turnSpeed);
                             loopState = 1;
                             break;
                         case 1:
-                            BrakeToStop(2, false);
+                            Swing(1, swingSpeed);
+                            Claw(true);
+                            loopState = 2;
                             break;
                         case 2:
-                            StartDrive(0, driveSpeed);
-                            loopState = 3;
+                            BrakeToStop(3, false);
                             break;
                         case 3:
-                            BrakeToStop(4, false);
+                            sleep(50);
+                            StartDrive(20, driveSpeed);
+                            loopState = 4;
                             break;
                         case 4:
-                            StartTurning(-45, turnSpeed);
-                            loopState = 5;
+                            BrakeToStop(5, false);
                             break;
                         case 5:
+                            sleep(50);
+                            StartTurning(-90, turnSpeed);
+                            loopState = 6;
+                            break;
+                        case 6:
                             BrakeToStop(10, false);
                             break;
-                        //drive to the sample
                         case 10:
+                            sleep(50);
                             StartDrive(0, driveSpeed);
                             loopState = 11;
                             break;
                         case 11:
-                            BrakeToStop(20,false);
+                            BrakeToStop(12, false);
                             break;
-                        //pick up the sample
-                        case 20:
-                            swingSpeed = 0.5;
+                        case 12:
                             Swing(2, swingSpeed);
-                            swingSpeed = 1;
+                            loopState = 13;
+                            break;
+                        case 13:
+                            sleep(500);
+                            Claw(false);
+                            loopState = 20;
+                            break;
+                        case 20:
+                            sleep(msForClaw);
+                            Swing(0, 0.4);
                             loopState = 21;
                             break;
                         case 21:
-                            //wait for the swing to finish
-                            sleep(2000);
-                            Claw(false);
-                            loopState = 30;
+                            StartTurning(90, turnSpeed);
+                            loopState = 22;
                             break;
-                        //put the arm up and move towards the basket
+                        case 22:
+                            BrakeToStop(23, false);
+                            break;
+                        case 23:
+                            sleep(50);
+                            StartDrive(-20, driveSpeed);
+                            loopState =24;
+                            break;
+                        case 24:
+                            BrakeToStop(25, false);
+                            break;
+                        case 25:
+                            sleep(50);
+                            StartTurning(-45, turnSpeed);
+                            loopState = 26;
+                            break;
+                        case 26:
+                            BrakeToStop(30, false);
+                            break;
                         case 30:
+                            sleep(1000);
+                            Claw(true);
                             sleep(msForClaw);
-                            Swing(0, 0.25);
+                            Claw(false);
                             loopState = 31;
                             break;
                         case 31:
-                            StartTurning(90, turnSpeed);
-                            loopState = 32;
+                            sleep(msForClaw);
+                            Swing(1, swingSpeed);
+                            loopState = 40;
                             break;
-                        case 32:
-                            BrakeToStop(33, false);
-                            break;
-                        case 33:
-                            StartDrive(5, driveSpeed);
-                            loopState = 34;
-                            break;
-                        case 34:
-                            Claw(true);
-                            loopState = 35;
-                            break;
-                        case 35 :
-                            BrakeToStop(40, false);
-                            break;
-
-                        // place the sample and move towards basket
                         case 40:
-                            //wait for the arm to stop jumping
-                            sleep(400);
-                            StartTurning(-45, turnSpeed);
+                            sleep(500);
+                            Lift(true, 1);
                             loopState = 41;
                             break;
                         case 41:
-                            Claw(false);
+                            //wait for the lift to go up
+                            sleep(3000);
+                            StartDrive(40, 0.5);
+                            Claw(true);
                             loopState = 42;
                             break;
                         case 42:
-                            BrakeToStop(43, false);
+                            if(!leftFrontDrive.isBusy()) {
+                                StopMoving();
+                                loopState = 50;
+                            }
                             break;
-                        case 43:
-
-
-
+                        case 50:
+                            sleep(50);
+                            StartDrive(-35, driveSpeed);
+                            loopState = 51;
+                            break;
+                        //sleep to prevent lift from tearing itself apart
+                        case 51:
+                            sleep(1500);
+                            Lift(false, 1);
+                            loopState = 52;
+                            break;
+                        case 52:
+                            BrakeToStop(50, true);
+                            runState = 60;
+                            break;
                     }
-
 
 
             }
