@@ -113,8 +113,8 @@ public class DriveMetal extends LinearOpMode {
 
     private void SpeedControl() {
         if (gamepad1.left_bumper) {
-            maxSpeed = 1;
-            turnSpeed = 1;
+            maxSpeed = 0.25;
+            turnSpeed = 4;
 
             telemetry.addData("Max speed ", maxSpeed);
             telemetry.update();

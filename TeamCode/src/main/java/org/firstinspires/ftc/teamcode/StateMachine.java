@@ -34,7 +34,7 @@ public class StateMachine extends LinearOpMode {
     private int runState = 0;
     private int loopState = 0;
     private int targetPos = 0;
-    private int liftPosUp = 7200;
+    private int liftPosUp = 7450;
     private double rotationRatio = 6.44;
     private int startBraking = (int)Math.round(0.5 * rotationRatio * countsPerRevolution);
 
@@ -132,7 +132,7 @@ public class StateMachine extends LinearOpMode {
                 case 40:
                     //wait for the lift to go up
                     sleep(100);
-                    StartDrive(40, 0.5);
+                    StartDrive(40, driveSpeed);
                     runState = 41;
                     break;
                 case 41:
@@ -143,7 +143,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 case 42:
                     sleep(50);
-                    StartDrive(-35, driveSpeed);
+                    StartDrive(-20, driveSpeed);
                     runState = 43;
                     break;
                 //sleep to prevent lift from tearing itself apart
@@ -175,7 +175,7 @@ public class StateMachine extends LinearOpMode {
                                 break;
                             case 10:
                                 sleep(50);
-                                StartDrive(0, driveSpeed);
+                                StartDrive(-11, driveSpeed);
                                 loopState = 11;
                                 break;
                             case 11:
@@ -186,7 +186,7 @@ public class StateMachine extends LinearOpMode {
                                 loopState = 13;
                                 break;
                             case 13:
-                                sleep(500);
+                                sleep(1000);
                                 Claw(false);
                                 loopState = 20;
                                 break;
@@ -196,10 +196,17 @@ public class StateMachine extends LinearOpMode {
                                 loopState = 21;
                                 break;
                             case 21:
-                                StartTurning(45, turnSpeed);
+                                StartDrive(15, driveSpeed);
                                 loopState = 22;
                                 break;
                             case 22:
+                                BrakeToStop(23, false);
+                                break;
+                            case 23:
+                                StartTurning(45, turnSpeed);
+                                loopState = 24;
+                                break;
+                            case 24:
                                 BrakeToStop(30, false);
                                 break;
                             case 30:
@@ -221,8 +228,8 @@ public class StateMachine extends LinearOpMode {
                                 break;
                             case 41:
                                 //wait for the lift to go up
-                                sleep(3000);
-                                StartDrive(40, 0.5);
+                                sleep(2500);
+                                StartDrive(25, driveSpeed);
                                 Claw(true);
                                 loopState = 42;
                                 break;
@@ -234,7 +241,7 @@ public class StateMachine extends LinearOpMode {
                                 break;
                             case 50:
                                 sleep(50);
-                                StartDrive(-35, driveSpeed);
+                                StartDrive(-30, driveSpeed);
                                 loopState = 51;
                                 break;
                             //sleep to prevent lift from tearing itself apart
@@ -270,7 +277,7 @@ public class StateMachine extends LinearOpMode {
                             break;
                         case 3:
                             sleep(50);
-                            StartDrive(20, driveSpeed);
+                            StartDrive(25, driveSpeed);
                             loopState = 4;
                             break;
                         case 4:
@@ -286,7 +293,7 @@ public class StateMachine extends LinearOpMode {
                             break;
                         case 10:
                             sleep(50);
-                            StartDrive(0, driveSpeed);
+                            StartDrive(-5, driveSpeed);
                             loopState = 11;
                             break;
                         case 11:
@@ -303,7 +310,7 @@ public class StateMachine extends LinearOpMode {
                             break;
                         case 20:
                             sleep(msForClaw);
-                            Swing(0, 0.4);
+                            Swing(0, driveSpeed);
                             loopState = 21;
                             break;
                         case 21:
@@ -315,7 +322,7 @@ public class StateMachine extends LinearOpMode {
                             break;
                         case 23:
                             sleep(50);
-                            StartDrive(-20, driveSpeed);
+                            StartDrive(-25, driveSpeed);
                             loopState =24;
                             break;
                         case 24:
@@ -348,7 +355,7 @@ public class StateMachine extends LinearOpMode {
                             break;
                         case 41:
                             //wait for the lift to go up
-                            sleep(3000);
+                            sleep(2500);
                             StartDrive(40, 0.5);
                             Claw(true);
                             loopState = 42;
