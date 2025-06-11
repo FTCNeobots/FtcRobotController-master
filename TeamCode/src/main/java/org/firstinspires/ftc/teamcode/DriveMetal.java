@@ -22,6 +22,7 @@ public class DriveMetal extends LinearOpMode {
     private DcMotor swingMotor;
     private DcMotor liftMotor;
     private Servo clawServo;
+    private Servo rotateServo;
 
     private double maxSpeed = 0.5;
     private double botHeading;
@@ -29,6 +30,7 @@ public class DriveMetal extends LinearOpMode {
 
     private double swingSpeed = 0.75;
     private double liftSpeed = 1;
+    private double rotatePos = 0;
 
     private int liftPosUp = 7400;
     private int liftPosMid = 3300;
@@ -44,6 +46,7 @@ public class DriveMetal extends LinearOpMode {
         liftMotor = hardwareMap.dcMotor.get("lift");
         swingMotor = hardwareMap.dcMotor.get("swing");
         clawServo = hardwareMap.get(Servo.class, "claw");
+        rotateServo = hardwareMap.get(Servo.class, "rotate");
 
         rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -153,6 +156,21 @@ public class DriveMetal extends LinearOpMode {
         if (gamepad2.dpad_up) {
             clawServo.setPosition(0.37);
         }
+        if(gamepad2.dpad_left && rotatePos > 0){
+            rotatePos -= 0.005;
+        }
+        if(gamepad2.dpad_right && rotatePos < 1){
+            rotatePos += 0.005;
+        }
+        rotateServo.setPosition(rotatePos);
+
+        telemetry.addData("Current claw position if applied: ", rotatePos);
+        telemetry.addData("Current rotate position if applied: ", rotatePos);
+        telemetry.update();
+
+
+
+
         Gamepad2StopMoving();
 
     }
