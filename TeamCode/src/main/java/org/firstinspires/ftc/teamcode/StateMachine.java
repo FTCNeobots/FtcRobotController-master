@@ -34,7 +34,7 @@ public class StateMachine extends LinearOpMode {
     private int runState = 0;
     private int loopState = 0;
     private int targetPos = 0;
-    private int liftPosUp = 7450;
+    private int liftPosUp = 3950;
     private double rotationRatio = 6.44;
     private int startBraking = (int)Math.round(0.5 * rotationRatio * countsPerRevolution);
 

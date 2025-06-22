@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
 @TeleOp(name = "DriveMetal")
-public class DriveMetal extends LinearOpMode {
+public class DriveMetalEvent extends LinearOpMode {
 
     private DcMotor leftFrontDrive;
     private DcMotor rightFrontDrive;
@@ -51,8 +51,8 @@ public class DriveMetal extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         //dit hoort niet te hoeven, maar zo werkt het?
-        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        //leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        //leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -115,18 +115,25 @@ public class DriveMetal extends LinearOpMode {
     }
 
     private void SpeedControl() {
-        if (gamepad1.left_bumper) {
+        if (gamepad1.dpad_down) {
             maxSpeed = 0.25;
             turnSpeed = 4;
 
             telemetry.addData("Max speed ", maxSpeed);
             telemetry.update();
-        } else if (gamepad1.right_bumper) {
+        } else if (gamepad1.dpad_left) {
             maxSpeed = 0.5;
             turnSpeed = 2;
 
             telemetry.addData("Max speed ", maxSpeed);
             telemetry.update();
+        }else if(gamepad1.dpad_up){
+            maxSpeed = 1;
+            turnSpeed = 1;
+
+            telemetry.addData("Max speed ", maxSpeed);
+            telemetry.update();
+
         }
 
     }
@@ -149,17 +156,17 @@ public class DriveMetal extends LinearOpMode {
             Lift(1, 1);
         }
         //dicht
-        if (gamepad2.dpad_down) {
+        if (gamepad1.left_bumper) {
             clawServo.setPosition(0.06);
             //open
         }
-        if (gamepad2.dpad_up) {
+        if (gamepad1.right_bumper) {
             clawServo.setPosition(0.37);
         }
-        if(gamepad2.dpad_left && rotatePos > 0){
+        if((gamepad1.left_trigger > 0) && rotatePos > 0){
             rotatePos -= 0.005;
         }
-        if(gamepad2.dpad_right && rotatePos < 1){
+        if((gamepad1.right_trigger > 0) && rotatePos < 1){
             rotatePos += 0.005;
         }
         rotateServo.setPosition(rotatePos);
