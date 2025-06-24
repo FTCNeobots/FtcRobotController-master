@@ -22,21 +22,22 @@ public class StateMachine extends LinearOpMode {
     private DcMotor swingMotor;
     private DcMotor liftMotor;
     private Servo clawServo;
+    private Servo rotateServo;
 
     double countsPerRevolution = 28 * 15;
     double cmPerRevolution = 31;
     double ticksPerCm = countsPerRevolution / cmPerRevolution;
 
     private double turnSpeed = 0.5;
-    private double driveSpeed = 0.25;
-    private double brakeSpeed = 0.25;
+    private double driveSpeed = 0.5;
+    private double brakeSpeed = 0.35;
     private double swingSpeed = 1;
     private int runState = 0;
     private int loopState = 0;
     private int targetPos = 0;
     private int liftPosUp = 3950;
     private double rotationRatio = 6.44;
-    private int startBraking = (int)Math.round(0.5 * rotationRatio * countsPerRevolution);
+    private int startBraking = (int)Math.round(0.3 * rotationRatio * countsPerRevolution);
 
 
     private int middlePosArm = -300;
@@ -54,6 +55,7 @@ public class StateMachine extends LinearOpMode {
         liftMotor = hardwareMap.dcMotor.get("lift");
         swingMotor = hardwareMap.dcMotor.get("swing");
         clawServo = hardwareMap.get(Servo.class, "claw");
+        rotateServo = hardwareMap.get(Servo.class, "rotate");
 
         rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -91,6 +93,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 case 2:
                     Swing(1, swingSpeed);
+                    rotateServo.setPosition(0.5);
                     runState = 3;
                     break;
                 case 3:
@@ -113,7 +116,7 @@ public class StateMachine extends LinearOpMode {
                 //drive towards basket
                 case 20:
                     sleep(50);
-                    StartDrive(15, driveSpeed);
+                    StartDrive(20, driveSpeed);
                     runState = 21;
                     break;
                 case 21:
@@ -143,12 +146,12 @@ public class StateMachine extends LinearOpMode {
                     break;
                 case 42:
                     sleep(50);
-                    StartDrive(-20, driveSpeed);
+                    StartDrive(-30, driveSpeed);
                     runState = 43;
                     break;
                 //sleep to prevent lift from tearing itself apart
                 case 43:
-                    sleep(1500);
+                    sleep(500);
                     Lift(false, 1);
                     runState = 44;
                     break;
@@ -176,7 +179,7 @@ public class StateMachine extends LinearOpMode {
                             //drive towards sample and pick it up
                             case 10:
                                 sleep(50);
-                                StartDrive(-11, driveSpeed);
+                                StartDrive(-2, driveSpeed);
                                 loopState = 11;
                                 break;
                             case 11:
@@ -213,7 +216,7 @@ public class StateMachine extends LinearOpMode {
                                 break;
                             //deposit the second sample in the lift
                             case 30:
-                                sleep(1000);
+                                sleep(50);
                                 Claw(true);
                                 sleep(msForClaw);
                                 Claw(false);
@@ -225,7 +228,7 @@ public class StateMachine extends LinearOpMode {
                                 loopState = 40;
                                 break;
                             case 40:
-                                sleep(500);
+                                sleep(300);
                                 Lift(true, 1);
                                 loopState = 41;
                                 break;
