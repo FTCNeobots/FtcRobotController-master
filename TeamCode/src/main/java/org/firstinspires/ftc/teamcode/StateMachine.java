@@ -41,7 +41,7 @@ public class StateMachine extends LinearOpMode {
 
 
     private int middlePosArm = -300;
-    private int bottomPosArm = -1050;
+    private int bottomPosArm = -1100;
     private long msForClaw = 400;
 
 
@@ -116,7 +116,7 @@ public class StateMachine extends LinearOpMode {
                 //drive towards basket
                 case 20:
                     sleep(50);
-                    StartDrive(20, driveSpeed);
+                    StartDrive(25, driveSpeed);
                     runState = 21;
                     break;
                 case 21:
@@ -125,7 +125,7 @@ public class StateMachine extends LinearOpMode {
                 //align with basket
                 case 30:
                     sleep(50);
-                    StartTurning(-45, turnSpeed);
+                    StartTurning(-40, turnSpeed);
                     runState = 31;
                     break;
                 case 31:
@@ -135,7 +135,7 @@ public class StateMachine extends LinearOpMode {
                 case 40:
                     //wait for the lift to go up
                     sleep(100);
-                    StartDrive(40, driveSpeed);
+                    StartDrive(40, 0.4);
                     runState = 41;
                     break;
                 case 41:
@@ -146,7 +146,7 @@ public class StateMachine extends LinearOpMode {
                     break;
                 case 42:
                     sleep(50);
-                    StartDrive(-30, driveSpeed);
+                    StartDrive(-25, driveSpeed);
                     runState = 43;
                     break;
                 //sleep to prevent lift from tearing itself apart
@@ -171,6 +171,7 @@ public class StateMachine extends LinearOpMode {
                             case 1:
                                 Swing(1, swingSpeed);
                                 Claw(true);
+                                rotateServo.setPosition(0.5);
                                 loopState = 2;
                                 break;
                             case 2:
@@ -179,7 +180,7 @@ public class StateMachine extends LinearOpMode {
                             //drive towards sample and pick it up
                             case 10:
                                 sleep(50);
-                                StartDrive(-2, driveSpeed);
+                                StartDrive(-8, driveSpeed);
                                 loopState = 11;
                                 break;
                             case 11:
@@ -197,11 +198,12 @@ public class StateMachine extends LinearOpMode {
                             //drive back and align with basket
                             case 20:
                                 sleep(msForClaw);
+                                rotateServo.setPosition(0.67);
                                 Swing(0, 0.4);
                                 loopState = 21;
                                 break;
                             case 21:
-                                StartDrive(15, driveSpeed);
+                                StartDrive(5, driveSpeed);
                                 loopState = 22;
                                 break;
                             case 22:
@@ -225,10 +227,11 @@ public class StateMachine extends LinearOpMode {
                             case 31:
                                 sleep(msForClaw);
                                 Swing(1, swingSpeed);
+                                rotateServo.setPosition(0.5);
                                 loopState = 40;
                                 break;
                             case 40:
-                                sleep(300);
+                                sleep(300 );
                                 Lift(true, 1);
                                 loopState = 41;
                                 break;
@@ -236,7 +239,7 @@ public class StateMachine extends LinearOpMode {
                             case 41:
                                 //wait for the lift to go up
                                 sleep(2500);
-                                StartDrive(25, driveSpeed);
+                                StartDrive(30, driveSpeed);
                                 Claw(true);
                                 loopState = 42;
                                 break;
@@ -303,7 +306,7 @@ public class StateMachine extends LinearOpMode {
                         //move forward and pick up the third sample
                         case 10:
                             sleep(50);
-                            StartDrive(-5, driveSpeed);
+                            StartDrive(-10, driveSpeed);
                             loopState = 11;
                             break;
                         case 11:
@@ -321,6 +324,7 @@ public class StateMachine extends LinearOpMode {
                         //move all the way back to align with basket
                         case 20:
                             sleep(msForClaw);
+                            rotateServo.setPosition(0.67);
                             Swing(0, driveSpeed);
                             loopState = 21;
                             break;
@@ -333,7 +337,7 @@ public class StateMachine extends LinearOpMode {
                             break;
                         case 23:
                             sleep(50);
-                            StartDrive(-25, driveSpeed);
+                            StartDrive(-15, driveSpeed);
                             loopState =24;
                             break;
                         case 24:
@@ -503,7 +507,7 @@ public class StateMachine extends LinearOpMode {
         if (trueForUp) {
             liftMotor.setTargetPosition(liftPosUp);
         } else {
-            liftMotor.setTargetPosition(0);
+            liftMotor.setTargetPosition(200);
         }
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(speed);
@@ -524,9 +528,9 @@ public class StateMachine extends LinearOpMode {
 
     private void Claw(boolean trueForOpen){
         if (trueForOpen) {
-            clawServo.setPosition(0.37);
+            clawServo.setPosition(0.70);
         }else{
-            clawServo.setPosition(0.06);
+            clawServo.setPosition(0.42);
         }
 
     }

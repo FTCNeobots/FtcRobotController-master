@@ -30,10 +30,11 @@ public class DriveMetal extends LinearOpMode {
 
     private double swingSpeed = 0.75;
     private double liftSpeed = 1;
-    private double rotatePos = 0;
+    private double rotatePos = 0.67;
 
     private int liftPosUp = 3950;
     private int liftPosMid = 1800;
+    private int liftPosDown = 200;
     private boolean resetUsingEncoder = true;
 
     @Override
@@ -150,17 +151,20 @@ public class DriveMetal extends LinearOpMode {
         }
         //dicht
         if (gamepad2.dpad_down) {
-            clawServo.setPosition(0.06);
+            clawServo.setPosition(0.70);
             //open
         }
         if (gamepad2.dpad_up) {
-            clawServo.setPosition(0.37);
+            clawServo.setPosition(0.42);
         }
         if(gamepad2.dpad_left && rotatePos > 0){
-            rotatePos -= 0.005;
+            rotatePos += 0.005;
         }
         if(gamepad2.dpad_right && rotatePos < 1){
-            rotatePos += 0.005;
+            rotatePos -= 0.005;
+        }
+        if(gamepad2.y){
+            rotatePos = 0.67;
         }
         rotateServo.setPosition(rotatePos);
 
@@ -187,7 +191,7 @@ public class DriveMetal extends LinearOpMode {
         } else if (trueForUp == 1){
             liftMotor.setTargetPosition(liftPosMid);
         }else {
-            liftMotor.setTargetPosition(0);
+            liftMotor.setTargetPosition(liftPosDown);
         }
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(speed);
