@@ -26,7 +26,7 @@ public class DriveMetal extends LinearOpMode {
 
     private double maxSpeed = 0.5;
     private double botHeading;
-    private double turnSpeed = 1;
+    private double turnSpeed = 2;
 
     private double swingSpeed = 0.75;
     private double liftSpeed = 1;
@@ -116,19 +116,17 @@ public class DriveMetal extends LinearOpMode {
     }
 
     private void SpeedControl() {
-        if (gamepad1.left_bumper) {
+        if (gamepad1.right_bumper) {
+            maxSpeed = 1;
+            turnSpeed = 1;
+        }else if(gamepad1.left_bumper){
             maxSpeed = 0.25;
             turnSpeed = 4;
-
-            telemetry.addData("Max speed ", maxSpeed);
-            telemetry.update();
-        } else if (gamepad1.right_bumper) {
+        }else{
             maxSpeed = 0.5;
             turnSpeed = 2;
-
-            telemetry.addData("Max speed ", maxSpeed);
-            telemetry.update();
         }
+
 
     }
 
@@ -157,11 +155,11 @@ public class DriveMetal extends LinearOpMode {
         if (gamepad2.dpad_up) {
             clawServo.setPosition(0.42);
         }
-        if(gamepad2.dpad_left && rotatePos > 0){
-            rotatePos += 0.005;
+        if(gamepad2.dpad_left && rotatePos < 1){
+            rotatePos += 0.008;
         }
-        if(gamepad2.dpad_right && rotatePos < 1){
-            rotatePos -= 0.005;
+        if(gamepad2.dpad_right && rotatePos > 0){
+            rotatePos -= 0.008;
         }
         if(gamepad2.y){
             rotatePos = 0.67;
