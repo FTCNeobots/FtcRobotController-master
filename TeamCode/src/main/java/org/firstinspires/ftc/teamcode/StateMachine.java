@@ -181,7 +181,7 @@ public class StateMachine extends LinearOpMode {
                             //drive towards sample and pick it up
                             case 10:
                                 sleep(50);
-                                StartDrive(-8, driveSpeed);
+                                StartDrive(-9, driveSpeed);
                                 loopState = 11;
                                 break;
                             case 11:
@@ -204,7 +204,7 @@ public class StateMachine extends LinearOpMode {
                                 loopState = 21;
                                 break;
                             case 21:
-                                StartDrive(9, driveSpeed);
+                                StartDrive(10, driveSpeed);
                                 loopState = 22;
                                 break;
                             case 22:
@@ -307,7 +307,7 @@ public class StateMachine extends LinearOpMode {
                         //move forward and pick up the third sample
                         case 10:
                             sleep(50);
-                            StartDrive(-2, driveSpeed);
+                            StartDrive(-3, driveSpeed);
                             loopState = 11;
                             break;
                         case 11:
@@ -381,7 +381,7 @@ public class StateMachine extends LinearOpMode {
                         //move back from the basket and lower the lift
                         case 50:
                             sleep(50);
-                            StartDrive(-100, driveSpeed);
+                            StartDrive(-30, driveSpeed);
                             loopState = 51;
                             break;
                         //sleep to prevent lift from tearing itself apart
@@ -396,7 +396,7 @@ public class StateMachine extends LinearOpMode {
                             break;
                         case 60:
                             sleep(50);
-                            StartTurning(-45, driveSpeed);
+                            StartTurning(45, driveSpeed);
                             loopState = 61;
                             break;
                         case 61:
@@ -404,7 +404,7 @@ public class StateMachine extends LinearOpMode {
                             break;
                         case 62:
                             sleep(50);
-                            StartDrive(-100, driveSpeed);
+                            StartStrafe(-90, 0.6);
                             loopState = 63;
                             break;
                         case 63:
@@ -412,7 +412,7 @@ public class StateMachine extends LinearOpMode {
                             break;
                         case 64:
                             sleep(50);
-                            StartTurning(90, driveSpeed);
+                            StartStrafe(10, 0.25);
                             loopState = 65;
                             break;
                         case 65:
@@ -420,14 +420,13 @@ public class StateMachine extends LinearOpMode {
                             break;
                         case 66:
                             sleep(50);
-                            StartDrive(-50, driveSpeed);
+                            StartDrive(-200, driveSpeed);
                             loopState = 67;
                             break;
                         case 67:
                             BrakeToStop(68, false);
                             break;
                         case 68:
-                            Swing(3, 0.5);
                             runState = 70;
                             break;
 
@@ -490,6 +489,31 @@ public class StateMachine extends LinearOpMode {
         leftFrontDrive.setTargetPosition(targetPos);
         leftBackDrive.setTargetPosition(targetPos);
         rightFrontDrive.setTargetPosition(targetPos);
+        rightBackDrive.setTargetPosition(targetPos);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFrontDrive.setPower(speed_);
+        leftBackDrive.setPower(speed_);
+        rightFrontDrive.setPower(speed_);
+        rightBackDrive.setPower(speed_);
+
+    }
+
+    private void StartStrafe(double cm_, double speed_){
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        targetPos = (int) (cm_ * ticksPerCm);
+
+        leftFrontDrive.setTargetPosition(targetPos);
+        leftBackDrive.setTargetPosition(-targetPos);
+        rightFrontDrive.setTargetPosition(-targetPos);
         rightBackDrive.setTargetPosition(targetPos);
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
